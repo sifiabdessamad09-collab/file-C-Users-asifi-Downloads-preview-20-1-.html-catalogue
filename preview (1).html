@@ -1,0 +1,2735 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FreshSOUK — Fruits & Légumes à domicile</title>
+  <meta
+    name="description"
+    content="FreshSOUK — Fruits, légumes et paniers frais livrés à domicile à Casablanca et alentours."
+  />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fresh: {
+              50: "#f0fdf4",
+              100: "#dcfce7",
+              200: "#bbf7d0",
+              500: "#22c55e",
+              600: "#16a34a",
+              700: "#15803d",
+              800: "#166534",
+              900: "#14532d"
+            },
+            souk: {
+              500: "#f97316",
+              600: "#ea580c",
+              700: "#c2410c"
+            }
+          },
+          boxShadow: {
+            soft: "0 12px 35px rgba(22,101,52,.10)",
+            card: "0 8px 25px rgba(15,23,42,.07)"
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background: #fafdf9;
+      color: #172017;
+    }
+
+    .hero-bg {
+      background:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,.22), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(249,115,22,.25), transparent 28%),
+        linear-gradient(135deg, #14532d 0%, #166534 48%, #15803d 100%);
+    }
+
+    .glass {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(12px);
+    }
+
+    .product-card {
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 38px rgba(22,101,52,.13);
+    }
+
+    .product-image {
+      transition: transform .4s ease;
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.06);
+    }
+
+    .category-btn.active {
+      background: #166534;
+      color: white;
+      border-color: #166534;
+    }
+
+    .drawer {
+      transition: transform .3s ease;
+    }
+
+    .drawer.closed {
+      transform: translateX(100%);
+    }
+
+    .overlay {
+      transition: opacity .25s ease;
+    }
+
+    .overlay.hidden-overlay {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .modal {
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .modal.hidden-modal {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(.96);
+    }
+
+    .toast {
+      animation: toastIn .3s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #86efac;
+      border-radius: 999px;
+    }
+
+    .arabic {
+      direction: rtl;
+    }
+
+    .quantity-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0fdf4;
+      color: #166534;
+      transition: .2s;
+    }
+
+    .quantity-btn:hover {
+      background: #dcfce7;
+    }
+
+    @media (max-width: 640px) {
+      .hero-title {
+        font-size: 2rem !important;
+        line-height: 1.25;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="h-20 flex items-center justify-between gap-4">
+
+        <a href="#accueil" class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-fresh-800 text-white flex items-center justify-center shadow-soft">
+            <i class="fa-solid fa-leaf text-xl"></i>
+          </div>
+
+          <div>
+            <div class="font-black text-xl text-fresh-800 tracking-tight">
+              Fresh<span class="text-souk-500">SOUK</span>
+            </div>
+            <div class="text-[10px] text-slate-500 uppercase tracking-widest">
+              Frais • Simple • Local
+            </div>
+          </div>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-7 text-sm font-semibold">
+          <a href="#accueil" class="hover:text-fresh-700">Accueil</a>
+          <a href="#catalogue" class="hover:text-fresh-700">Catalogue</a>
+          <a href="#comment-ca-marche" class="hover:text-fresh-700">Comment ça marche</a>
+          <a href="#livraison" class="hover:text-fresh-700">Livraison</a>
+        </nav>
+
+        <button
+          id="openCartBtn"
+          class="relative flex items-center gap-2 bg-fresh-800 text-white px-4 py-3 rounded-xl font-bold hover:bg-fresh-700 transition"
+        >
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span class="hidden sm:inline">Panier</span>
+          <span
+            id="cartCount"
+            class="absolute -top-2 -right-2 min-w-6 h-6 px-1 rounded-full bg-souk-500 text-white text-xs flex items-center justify-center font-black"
+          >0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- =========================
+       HERO
+  ========================== -->
+  <section id="accueil" class="hero-bg text-white">
+    <div class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+        <div>
+          <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm mb-6">
+            <i class="fa-solid fa-location-dot text-orange-300"></i>
+            Livraison à domicile • Casablanca & alentours
+          </div>
+
+          <h1 class="hero-title text-4xl md:text-6xl font-black leading-tight">
+            FreshSOUK :
+            <span class="text-orange-300">سلعة السوق نقيّة ومخيّيرة..</span>
+            حتال باب الدار وبثمن اللي يريحك!
+          </h1>
+
+          <p class="mt-6 text-lg md:text-xl text-green-50 leading-relaxed max-w-2xl">
+            خضر وفواكه طازجين، اختار اللي بغيتي، شوف السلعة ملي توصلك،
+            ومن بعد خلّص فباب الدار.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-3 mt-8">
+            <a
+              href="#catalogue"
+              class="bg-white text-fresh-800 px-6 py-4 rounded-xl font-black text-center hover:bg-green-50 transition"
+            >
+              <i class="fa-solid fa-basket-shopping mr-2"></i>
+              Voir le catalogue
+            </a>
+
+            <a
+              href="#comment-ca-marche"
+              class="glass px-6 py-4 rounded-xl font-bold text-center hover:bg-white/20 transition"
+            >
+              Comment ça marche ?
+            </a>
+          </div>
+
+          <div class="flex flex-wrap gap-5 mt-9 text-sm">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-orange-300"></i>
+              Produits frais
+            </div>
+
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-orange-300"></i>
+              Circuits courts
+            </div>
+
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-orange-300"></i>
+              Paiement à la livraison
+            </div>
+          </div>
+        </div>
+
+        <div class="hidden lg:block">
+          <div class="glass rounded-[2rem] p-5 shadow-2xl">
+            <img
+              src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=85"
+              alt="Fruits et légumes frais"
+              class="rounded-[1.5rem] w-full h-[470px] object-cover"
+            />
+
+            <div class="bg-white text-slate-900 rounded-2xl p-5 mt-4 shadow-lg">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-black">🥬 Le marché dans ton panier</p>
+                  <p class="text-sm text-slate-500 mt-1">
+                    Choisis, vérifie, puis paie.
+                  </p>
+                </div>
+
+                <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-fresh-800">
+                  <i class="fa-solid fa-truck-fast text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================
+       VALUE PROPS
+  ========================== -->
+  <section class="py-10 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-5">
+
+        <div class="rounded-2xl border border-green-100 bg-green-50 p-6">
+          <div class="w-12 h-12 rounded-xl bg-white text-fresh-800 flex items-center justify-center shadow-sm mb-4">
+            <i class="fa-solid fa-seedling text-xl"></i>
+          </div>
+          <h3 class="font-black text-lg">Frais & sélectionné</h3>
+          <p class="text-sm text-slate-600 mt-2">
+            Des produits sélectionnés pour leur fraîcheur et leur qualité.
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-orange-100 bg-orange-50 p-6">
+          <div class="w-12 h-12 rounded-xl bg-white text-souk-600 flex items-center justify-center shadow-sm mb-4">
+            <i class="fa-solid fa-route text-xl"></i>
+          </div>
+          <h3 class="font-black text-lg">Circuit court</h3>
+          <p class="text-sm text-slate-600 mt-2">
+            Du marché de gros vers ta maison avec moins d'intermédiaires.
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-blue-100 bg-blue-50 p-6">
+          <div class="w-12 h-12 rounded-xl bg-white text-blue-700 flex items-center justify-center shadow-sm mb-4">
+            <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
+          </div>
+          <h3 class="font-black text-lg">Tu vérifies avant de payer</h3>
+          <p class="text-sm text-slate-600 mt-2">
+            الخلاص حتى تقلب سلعتك عاد خلص فباب الدار.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================
+       DELIVERY ALERT
+  ========================== -->
+  <section id="livraison" class="bg-souk-500 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+        <div class="font-bold">
+          <i class="fa-solid fa-truck mr-2"></i>
+          Livraison standard : 20 DH
+        </div>
+
+        <div class="font-black">
+          🎉 Livraison GRATUITE dès 200 DH
+          <span class="font-normal">à Casablanca, Bouskoura & Mohammedia</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================
+       CATALOGUE
+  ========================== -->
+  <main id="catalogue" class="max-w-7xl mx-auto px-4 py-14">
+
+    <div class="text-center max-w-3xl mx-auto">
+      <span class="inline-block bg-green-100 text-fresh-800 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider">
+        Notre marché
+      </span>
+
+      <h2 class="text-3xl md:text-5xl font-black mt-4">
+        Le catalogue Fresh<span class="text-souk-500">SOUK</span>
+      </h2>
+
+      <p class="text-slate-600 mt-4">
+        خضر، فواكه، أعشاب و paniers pour toute la famille.
+      </p>
+    </div>
+
+
+    <!-- SEARCH -->
+    <div class="max-w-3xl mx-auto mt-9">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Rechercher un produit... Maticha, طماطم, avocat, panier..."
+          class="w-full bg-white border border-slate-200 rounded-2xl py-4 pl-12 pr-5 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100 shadow-sm"
+        />
+      </div>
+    </div>
+
+
+    <!-- FILTERS -->
+    <div class="flex flex-wrap justify-center gap-2 mt-6">
+      <button class="category-btn active border px-5 py-2.5 rounded-full font-bold text-sm" data-category="Tous">
+        Tous
+      </button>
+
+      <button class="category-btn border border-slate-200 bg-white px-5 py-2.5 rounded-full font-bold text-sm" data-category="Paniers">
+        🧺 Paniers
+      </button>
+
+      <button class="category-btn border border-slate-200 bg-white px-5 py-2.5 rounded-full font-bold text-sm" data-category="Légumes">
+        🥕 Légumes
+      </button>
+
+      <button class="category-btn border border-slate-200 bg-white px-5 py-2.5 rounded-full font-bold text-sm" data-category="Fruits">
+        🍊 Fruits
+      </button>
+
+      <button class="category-btn border border-slate-200 bg-white px-5 py-2.5 rounded-full font-bold text-sm" data-category="Herbes">
+        🌿 Herbes
+      </button>
+    </div>
+
+
+    <!-- RESULT COUNT -->
+    <div class="flex items-center justify-between mt-10 mb-5">
+      <div>
+        <h3 class="font-black text-xl">
+          Nos produits
+        </h3>
+
+        <p id="resultCount" class="text-sm text-slate-500 mt-1">
+          0 produits
+        </p>
+      </div>
+
+      <div class="hidden sm:flex items-center gap-2 text-sm text-slate-500">
+        <i class="fa-solid fa-circle-check text-green-600"></i>
+        Paiement à la livraison
+      </div>
+    </div>
+
+
+    <!-- PRODUCTS -->
+    <div
+      id="productsGrid"
+      class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5"
+    ></div>
+
+
+    <!-- EMPTY -->
+    <div id="emptyState" class="hidden text-center py-20">
+      <div class="w-20 h-20 rounded-full bg-green-100 mx-auto flex items-center justify-center text-fresh-800 text-3xl">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+
+      <h3 class="text-xl font-black mt-5">
+        Aucun produit trouvé
+      </h3>
+
+      <p class="text-slate-500 mt-2">
+        Essaie avec un autre mot-clé.
+      </p>
+    </div>
+
+  </main>
+
+
+  <!-- =========================
+       HOW IT WORKS
+  ========================== -->
+  <section id="comment-ca-marche" class="bg-green-50 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+
+      <div class="text-center">
+        <span class="text-fresh-800 font-black text-sm uppercase tracking-widest">
+          Simple comme au souk
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-black mt-3">
+          Comment ça marche ?
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-4 gap-5 mt-10">
+
+        <div class="bg-white rounded-2xl p-6 shadow-card">
+          <div class="w-12 h-12 bg-green-100 text-fresh-800 rounded-xl flex items-center justify-center font-black text-xl">
+            1
+          </div>
+          <h3 class="font-black mt-5">Choisis</h3>
+          <p class="text-sm text-slate-500 mt-2">
+            Sélectionne tes produits et ajoute-les au panier.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-card">
+          <div class="w-12 h-12 bg-orange-100 text-souk-600 rounded-xl flex items-center justify-center font-black text-xl">
+            2
+          </div>
+          <h3 class="font-black mt-5">Commande</h3>
+          <p class="text-sm text-slate-500 mt-2">
+            Remplis tes informations de livraison.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-card">
+          <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center font-black text-xl">
+            3
+          </div>
+          <h3 class="font-black mt-5">Vérifie</h3>
+          <p class="text-sm text-slate-500 mt-2">
+            Regarde ta commande lorsque le livreur arrive.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-card">
+          <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center font-black text-xl">
+            4
+          </div>
+          <h3 class="font-black mt-5">Paie</h3>
+          <p class="text-sm text-slate-500 mt-2">
+            الخلاص فباب الدار بعد vérification.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+  <footer class="bg-slate-950 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+
+      <div class="grid md:grid-cols-4 gap-10">
+
+        <div class="md:col-span-2">
+          <div class="font-black text-2xl">
+            Fresh<span class="text-orange-400">SOUK</span>
+          </div>
+
+          <p class="text-slate-400 mt-4 max-w-md">
+            خضر وفواكه طازجين حتال باب الدار.
+            اختار، قلب السلعة، ومن بعد خلّص.
+          </p>
+
+          <div class="mt-5 text-green-400 font-bold">
+            سلعة السوق نقيّة ومخيّيرة ❤️
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-black mb-4">Livraison</h3>
+
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li>Casablanca</li>
+            <li>Bouskoura</li>
+            <li>Mohammedia</li>
+            <li>Rabat</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-black mb-4">Paiement</h3>
+
+          <p class="text-sm text-slate-400">
+            Paiement à la livraison après vérification de la marchandise.
+          </p>
+
+          <div class="mt-4 inline-flex items-center gap-2 bg-green-900/40 px-3 py-2 rounded-lg text-green-300 text-sm">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            Cash on Delivery
+          </div>
+        </div>
+
+      </div>
+
+      <div class="border-t border-slate-800 mt-10 pt-6 text-center text-sm text-slate-500">
+        © <span id="year"></span> FreshSOUK — Tous droits réservés.
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- =========================
+       CART OVERLAY
+  ========================== -->
+  <div
+    id="cartOverlay"
+    class="overlay hidden-overlay fixed inset-0 bg-black/50 z-50"
+  ></div>
+
+
+  <!-- =========================
+       CART DRAWER
+  ========================== -->
+  <aside
+    id="cartDrawer"
+    class="drawer closed fixed right-0 top-0 bottom-0 z-[60] w-full max-w-md bg-white shadow-2xl flex flex-col"
+  >
+
+    <div class="p-5 border-b flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-black">Mon panier 🛒</h2>
+        <p id="cartSubtitle" class="text-sm text-slate-500 mt-1">
+          0 article
+        </p>
+      </div>
+
+      <button
+        id="closeCartBtn"
+        class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+
+    <!-- FREE DELIVERY PROGRESS -->
+    <div class="p-5 bg-green-50 border-b border-green-100">
+      <div class="flex items-center justify-between text-sm">
+        <span class="font-bold text-fresh-800">
+          Livraison gratuite
+        </span>
+
+        <span id="deliveryProgressText" class="font-black text-fresh-800">
+          Dès 200 DH
+        </span>
+      </div>
+
+      <div class="h-2 bg-green-200 rounded-full mt-3 overflow-hidden">
+        <div
+          id="deliveryProgress"
+          class="h-full bg-fresh-700 rounded-full transition-all"
+          style="width:0%"
+        ></div>
+      </div>
+
+      <p id="deliveryProgressHint" class="text-xs text-green-700 mt-2">
+        Encore 200 DH pour profiter de la livraison gratuite.
+      </p>
+    </div>
+
+
+    <!-- CART ITEMS -->
+    <div id="cartItems" class="flex-1 overflow-y-auto p-5"></div>
+
+
+    <!-- CART FOOTER -->
+    <div class="border-t bg-white p-5">
+
+      <div class="flex justify-between text-sm mb-2">
+        <span class="text-slate-500">Sous-total</span>
+        <span id="cartSubtotal" class="font-bold">0 DH</span>
+      </div>
+
+      <div class="flex justify-between text-sm mb-3">
+        <span class="text-slate-500">Livraison</span>
+        <span id="cartShipping" class="font-bold">0 DH</span>
+      </div>
+
+      <div class="flex justify-between text-xl font-black border-t pt-3">
+        <span>Total</span>
+        <span id="cartTotal" class="text-fresh-800">0 DH</span>
+      </div>
+
+      <button
+        id="checkoutBtn"
+        class="w-full mt-5 bg-fresh-800 text-white py-4 rounded-xl font-black hover:bg-fresh-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        disabled
+      >
+        <i class="fa-brands fa-whatsapp mr-2"></i>
+        Commander
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- =========================
+       CHECKOUT OVERLAY
+  ========================== -->
+  <div
+    id="checkoutOverlay"
+    class="fixed inset-0 z-[70] bg-black/60 flex items-center justify-center p-4 hidden"
+  >
+
+    <div
+      id="checkoutModal"
+      class="modal hidden-modal bg-white w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl shadow-2xl"
+    >
+
+      <div class="sticky top-0 bg-white border-b p-5 flex items-center justify-between z-10">
+        <div>
+          <h2 class="text-xl font-black">
+            Finaliser ma commande
+          </h2>
+
+          <p class="text-sm text-slate-500 mt-1">
+            Ta commande sera envoyée par WhatsApp.
+          </p>
+        </div>
+
+        <button
+          id="closeCheckoutBtn"
+          class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+
+      <form id="checkoutForm" class="p-5 space-y-5">
+
+        <!-- CUSTOMER INFO -->
+        <div>
+          <h3 class="font-black text-lg mb-4">
+            📍 Informations de livraison
+          </h3>
+
+          <div class="grid md:grid-cols-2 gap-4">
+
+            <div>
+              <label class="block text-sm font-bold mb-2">
+                Nom complet *
+              </label>
+
+              <input
+                name="name"
+                required
+                type="text"
+                placeholder="Ex : Abdessamad Sifi"
+                class="w-full border rounded-xl px-4 py-3 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold mb-2">
+                Téléphone *
+              </label>
+
+              <input
+                name="phone"
+                required
+                type="tel"
+                placeholder="06 XX XX XX XX"
+                class="w-full border rounded-xl px-4 py-3 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100"
+              />
+            </div>
+
+          </div>
+        </div>
+
+
+        <div>
+          <label class="block text-sm font-bold mb-2">
+            Ville *
+          </label>
+
+          <select
+            id="citySelect"
+            name="city"
+            required
+            class="w-full border rounded-xl px-4 py-3 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100"
+          >
+            <option value="Casablanca">Casablanca</option>
+            <option value="Bouskoura">Bouskoura</option>
+            <option value="Mohammedia">Mohammedia</option>
+            <option value="Rabat">Rabat</option>
+          </select>
+
+          <p id="cityDeliveryNote" class="text-xs text-slate-500 mt-2"></p>
+        </div>
+
+
+        <div>
+          <label class="block text-sm font-bold mb-2">
+            Adresse complète *
+          </label>
+
+          <textarea
+            name="address"
+            required
+            rows="3"
+            placeholder="Quartier, rue, immeuble, étage, appartement..."
+            class="w-full border rounded-xl px-4 py-3 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100"
+          ></textarea>
+        </div>
+
+
+        <div>
+          <label class="block text-sm font-bold mb-2">
+            Créneau souhaité
+          </label>
+
+          <select
+            name="time"
+            class="w-full border rounded-xl px-4 py-3 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100"
+          >
+            <option value="Matin — 09h00 à 13h00">Matin — 09h00 à 13h00</option>
+            <option value="Après-midi — 13h00 à 17h00">Après-midi — 13h00 à 17h00</option>
+            <option value="Soir — 17h00 à 21h00">Soir — 17h00 à 21h00</option>
+          </select>
+        </div>
+
+
+        <div>
+          <label class="block text-sm font-bold mb-2">
+            Note / précision
+          </label>
+
+          <textarea
+            name="note"
+            rows="2"
+            placeholder="Ex : appeler avant d'arriver..."
+            class="w-full border rounded-xl px-4 py-3 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-100"
+          ></textarea>
+        </div>
+
+
+        <!-- ORDER SUMMARY -->
+        <div class="rounded-2xl bg-slate-50 border p-4">
+          <h3 class="font-black mb-3">
+            🧺 Résumé de la commande
+          </h3>
+
+          <div id="checkoutItems" class="space-y-2"></div>
+
+          <div class="border-t mt-4 pt-4 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span>Sous-total</span>
+              <strong id="checkoutSubtotal">0 DH</strong>
+            </div>
+
+            <div class="flex justify-between text-sm">
+              <span>Livraison</span>
+              <strong id="checkoutShipping">0 DH</strong>
+            </div>
+
+            <div class="flex justify-between text-xl font-black pt-2">
+              <span>Total</span>
+              <strong id="checkoutTotal" class="text-fresh-800">0 DH</strong>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="rounded-2xl bg-green-50 border border-green-100 p-4 text-sm text-green-800">
+          <i class="fa-solid fa-circle-check mr-2"></i>
+          <strong>Paiement à la livraison :</strong>
+          vérifie ta marchandise avant de payer.
+        </div>
+
+
+        <button
+          type="submit"
+          class="w-full bg-[#25D366] hover:bg-[#1ebe5d] text-white py-4 rounded-xl font-black transition"
+        >
+          <i class="fa-brands fa-whatsapp text-xl mr-2"></i>
+          Envoyer la commande sur WhatsApp
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+
+  <!-- =========================
+       TOAST
+  ========================== -->
+  <div
+    id="toast"
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] hidden"
+  >
+    <div class="bg-slate-950 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+      <i class="fa-solid fa-circle-check text-green-400"></i>
+      <span id="toastText">Produit ajouté au panier</span>
+    </div>
+  </div>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+  <script>
+
+    /* =====================================
+       CONFIGURATION
+    ====================================== */
+
+    /*
+      IMPORTANT :
+      Remplace ce numéro par ton vrai numéro WhatsApp.
+      Format recommandé : 2126XXXXXXXX
+      Exemple : 212612345678
+    */
+    const WHATSAPP_NUMBER = "212600000000";
+
+    const FREE_DELIVERY_CITIES = [
+      "Casablanca",
+      "Bouskoura",
+      "Mohammedia"
+    ];
+
+    const FREE_DELIVERY_THRESHOLD = 200;
+    const STANDARD_DELIVERY = 20;
+
+    const DEFAULT_IMAGE =
+      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=85";
+
+
+    /* =====================================
+       PRODUITS
+       60+ PRODUITS
+    ====================================== */
+
+    const PRODUCTS = [
+
+      /* =========================
+         PANIERS — TOUJOURS EN PREMIER
+      ========================== */
+
+      {
+        id: "pack-famille",
+        name: "صندوق العائلة الأسبوعي",
+        french: "Panier Famille",
+        arabic: "صندوق العائلة الأسبوعي",
+        category: "Paniers",
+        price: 120,
+        unit: "panier",
+        detail: "15 kg mixte",
+        badge: "Best-seller",
+        label: "تقدر تبدل حتى لـ 2 د الخضاري فالبانيي ديالك",
+        image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=85",
+        search: "panier famille صندوق العائلة 15kg légumes fruits"
+      },
+
+      {
+        id: "pack-vitamines",
+        name: "صندوق الديسير والفواكه",
+        french: "Panier Vitamines",
+        arabic: "صندوق الديسير والفواكه",
+        category: "Paniers",
+        price: 85,
+        unit: "panier",
+        detail: "5 kg fruits",
+        badge: "Populaire",
+        label: "Mix fruits frais",
+        image: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=900&q=85",
+        search: "panier vitamines fruits dessert فواكه 5kg"
+      },
+
+      {
+        id: "pack-soupe",
+        name: "صندوق الحصيرة والحريرة",
+        french: "Panier Soupe & Harira",
+        arabic: "صندوق الحصيرة والحريرة",
+        category: "Paniers",
+        price: 45,
+        unit: "panier",
+        detail: "Tomates, herbes & oignons",
+        badge: "Nouveau",
+        label: "Idéal pour حريرة",
+        image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=85",
+        search: "panier soupe harira حريرة tomates oignons"
+      },
+
+      {
+        id: "pack-fruits",
+        name: "Panier Fruits de Saison",
+        french: "Fruits de Saison",
+        arabic: "بانيي ديال الفواكه",
+        category: "Paniers",
+        price: 110,
+        unit: "panier",
+        detail: "Environ 6 kg",
+        badge: "Saison",
+        label: "Sélection du marché",
+        image: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?auto=format&fit=crop&w=900&q=85",
+        search: "panier fruits saison فواكه"
+      },
+
+      {
+        id: "pack-legumes",
+        name: "Panier Légumes de Saison",
+        french: "Légumes de Saison",
+        arabic: "بانيي ديال الخضرة",
+        category: "Paniers",
+        price: 95,
+        unit: "panier",
+        detail: "Environ 8 kg",
+        badge: "Saison",
+        label: "Sélection du souk",
+        image: "https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=900&q=85",
+        search: "panier légumes saison خضرة"
+      },
+
+      {
+        id: "pack-budget",
+        name: "Panier Petit Budget",
+        french: "Petit Budget",
+        arabic: "بانيي اقتصادي",
+        category: "Paniers",
+        price: 55,
+        unit: "panier",
+        detail: "Environ 4 kg",
+        badge: "Éco",
+        label: "Petit prix",
+        image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=85",
+        search: "panier budget économique اقتصادي"
+      },
+
+      {
+        id: "pack-xl",
+        name: "Panier Famille XL",
+        french: "Famille XL",
+        arabic: "بانيي العائلة الكبير",
+        category: "Paniers",
+        price: 180,
+        unit: "panier",
+        detail: "Environ 20 kg",
+        badge: "XL",
+        label: "Pour toute la famille",
+        image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=900&q=85",
+        search: "panier famille xl 20kg كبير"
+      },
+
+      {
+        id: "pack-jus",
+        name: "Panier Jus & Fruits",
+        french: "Jus & Fruits",
+        arabic: "بانيي ديال العصير",
+        category: "Paniers",
+        price: 75,
+        unit: "panier",
+        detail: "Agrumes & fruits",
+        badge: "Fresh",
+        label: "Parfait pour les jus",
+        image: "https://images.unsplash.com/photo-1546549032-9571cd6b27df?auto=format&fit=crop&w=900&q=85",
+        search: "panier jus fruits عصير ليمون برتقال"
+      },
+
+      {
+        id: "pack-salade",
+        name: "Panier Salade Fraîche",
+        french: "Salade Fraîche",
+        arabic: "بانيي السلطة",
+        category: "Paniers",
+        price: 60,
+        unit: "panier",
+        detail: "Laitue, concombre, tomate...",
+        badge: "Fresh",
+        label: "Prêt pour la salade",
+        image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85",
+        search: "panier salade سلطة laitue tomate concombre"
+      },
+
+
+      /* =========================
+         LEGUMES
+      ========================== */
+
+      {
+        id: "tomate",
+        name: "Maticha",
+        french: "Tomates",
+        arabic: "طماطم",
+        category: "Légumes",
+        price: 8,
+        unit: "kg",
+        detail: "Tomates fraîches",
+        badge: "Populaire",
+        image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=900&q=85",
+        search: "maticha tomate طماطم"
+      },
+
+      {
+        id: "tomate-cerise",
+        name: "Maticha Cerise",
+        french: "Tomates cerises",
+        arabic: "طماطم صغيرة",
+        category: "Légumes",
+        price: 15,
+        unit: "kg",
+        detail: "Tomates cerises",
+        badge: "Premium",
+        image: "https://images.unsplash.com/photo-1561136594-7f68413baa99?auto=format&fit=crop&w=900&q=85",
+        search: "tomates cerises maticha sghira"
+      },
+
+      {
+        id: "pomme-terre",
+        name: "Batata",
+        french: "Pommes de terre",
+        arabic: "بطاطس",
+        category: "Légumes",
+        price: 7,
+        unit: "kg",
+        detail: "Pommes de terre",
+        image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=900&q=85",
+        search: "batata pomme terre بطاطس"
+      },
+
+      {
+        id: "batata-nouvelle",
+        name: "Batata Nouvelle",
+        french: "Pommes de terre nouvelles",
+        arabic: "بطاطس جديدة",
+        category: "Légumes",
+        price: 9,
+        unit: "kg",
+        detail: "Pommes de terre nouvelles",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1590165482129-1b8b27698780?auto=format&fit=crop&w=900&q=85",
+        search: "batata jdida pomme terre nouvelle"
+      },
+
+      {
+        id: "oignon-rouge",
+        name: "Basla Hamra",
+        french: "Oignons rouges",
+        arabic: "بصل أحمر",
+        category: "Légumes",
+        price: 8,
+        unit: "kg",
+        detail: "Oignons rouges",
+        image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=900&q=85",
+        search: "basla hamra oignon rouge بصل أحمر"
+      },
+
+      {
+        id: "oignon-blanc",
+        name: "Basla Bida",
+        french: "Oignons blancs",
+        arabic: "بصل أبيض",
+        category: "Légumes",
+        price: 7,
+        unit: "kg",
+        detail: "Oignons blancs",
+        image: "https://images.unsplash.com/photo-1508747703725-719777637510?auto=format&fit=crop&w=900&q=85",
+        search: "basla bida oignon blanc بصل"
+      },
+
+      {
+        id: "carotte",
+        name: "Khizzo",
+        french: "Carottes",
+        arabic: "جزر",
+        category: "Légumes",
+        price: 6,
+        unit: "kg",
+        detail: "Carottes fraîches",
+        image: "https://images.unsplash.com/photo-1445282768818-728615cc910a?auto=format&fit=crop&w=900&q=85",
+        search: "khizzo carotte جزر"
+      },
+
+      {
+        id: "courgette",
+        name: "Gorgueze",
+        french: "Courgettes",
+        arabic: "قرع أخضر",
+        category: "Légumes",
+        price: 12,
+        unit: "kg",
+        detail: "Courgettes fraîches",
+        image: "https://images.unsplash.com/photo-1566842600175-97dca8a2d1d7?auto=format&fit=crop&w=900&q=85",
+        search: "gorgueze courgette قرع أخضر"
+      },
+
+      {
+        id: "poivron-vert",
+        name: "Felfla Khdra",
+        french: "Poivrons verts",
+        arabic: "فلفلة خضراء",
+        category: "Légumes",
+        price: 9,
+        unit: "kg",
+        detail: "Poivrons verts",
+        image: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=900&q=85",
+        search: "felfla khdra poivron vert فلفلة"
+      },
+
+      {
+        id: "poivron-rouge",
+        name: "Felfla Hamra",
+        french: "Poivrons rouges",
+        arabic: "فلفلة حمراء",
+        category: "Légumes",
+        price: 14,
+        unit: "kg",
+        detail: "Poivrons rouges",
+        image: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=900&q=85",
+        search: "felfla hamra poivron rouge"
+      },
+
+      {
+        id: "poivron-jaune",
+        name: "Felfla Safra",
+        french: "Poivrons jaunes",
+        arabic: "فلفلة صفراء",
+        category: "Légumes",
+        price: 14,
+        unit: "kg",
+        detail: "Poivrons jaunes",
+        image: "https://images.unsplash.com/photo-1594489576889-3a2f2c8a2f32?auto=format&fit=crop&w=900&q=85",
+        search: "felfla safra poivron jaune"
+      },
+
+      {
+        id: "concombre",
+        name: "Khiyar",
+        french: "Concombres",
+        arabic: "خيار",
+        category: "Légumes",
+        price: 8,
+        unit: "kg",
+        detail: "Concombres frais",
+        image: "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?auto=format&fit=crop&w=900&q=85",
+        search: "khiyar concombre خيار"
+      },
+
+      {
+        id: "aubergine",
+        name: "Bedinjane",
+        french: "Aubergines",
+        arabic: "باذنجان",
+        category: "Légumes",
+        price: 10,
+        unit: "kg",
+        detail: "Aubergines fraîches",
+        image: "https://images.unsplash.com/photo-1615485291234-9d694218aeb3?auto=format&fit=crop&w=900&q=85",
+        search: "bedinjane aubergine باذنجان"
+      },
+
+      {
+        id: "chou",
+        name: "Kromb",
+        french: "Chou vert",
+        arabic: "كرومب",
+        category: "Légumes",
+        price: 7,
+        unit: "kg",
+        detail: "Chou vert",
+        image: "https://images.unsplash.com/photo-1598030304671-5aa1b0c5a2b1?auto=format&fit=crop&w=900&q=85",
+        search: "kromb chou كرومب"
+      },
+
+      {
+        id: "chou-fleur",
+        name: "Chou-fleur",
+        french: "Chou-fleur",
+        arabic: "قرنبيط",
+        category: "Légumes",
+        price: 10,
+        unit: "kg",
+        detail: "Chou-fleur frais",
+        image: "https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?auto=format&fit=crop&w=900&q=85",
+        search: "chou fleur 9arnabit قرنبيط"
+      },
+
+      {
+        id: "brocoli",
+        name: "Brocoli",
+        french: "Brocoli",
+        arabic: "بروكولي",
+        category: "Légumes",
+        price: 18,
+        unit: "kg",
+        detail: "Brocoli frais",
+        badge: "Fresh",
+        image: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&w=900&q=85",
+        search: "brocoli بروكولي"
+      },
+
+      {
+        id: "laitue",
+        name: "Khass",
+        french: "Laitue",
+        arabic: "خس",
+        category: "Légumes",
+        price: 5,
+        unit: "pièce",
+        detail: "Laitue fraîche",
+        image: "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?auto=format&fit=crop&w=900&q=85",
+        search: "khass laitue خس salade"
+      },
+
+      {
+        id: "epinards",
+        name: "Sbanekh",
+        french: "Épinards",
+        arabic: "سبانخ",
+        category: "Légumes",
+        price: 10,
+        unit: "kg",
+        detail: "Épinards frais",
+        image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=900&q=85",
+        search: "sbanekh epinards سبانخ"
+      },
+
+      {
+        id: "navet",
+        name: "Left",
+        french: "Navets",
+        arabic: "لفت",
+        category: "Légumes",
+        price: 8,
+        unit: "kg",
+        detail: "Navets frais",
+        image: "https://images.unsplash.com/photo-1593026125722-8f8a6e3f1a3c?auto=format&fit=crop&w=900&q=85",
+        search: "left navet لفت"
+      },
+
+      {
+        id: "betterave",
+        name: "Barba",
+        french: "Betteraves",
+        arabic: "باربا",
+        category: "Légumes",
+        price: 9,
+        unit: "kg",
+        detail: "Betteraves rouges",
+        image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=85",
+        search: "barba betterave باربا"
+      },
+
+      {
+        id: "poireau",
+        name: "Krafs",
+        french: "Poireaux",
+        arabic: "كراث",
+        category: "Légumes",
+        price: 12,
+        unit: "kg",
+        detail: "Poireaux frais",
+        image: "https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?auto=format&fit=crop&w=900&q=85",
+        search: "krafs poireau كراث"
+      },
+
+      {
+        id: "haricot",
+        name: "Loubia Khadra",
+        french: "Haricots verts",
+        arabic: "لوبيا خضراء",
+        category: "Légumes",
+        price: 18,
+        unit: "kg",
+        detail: "Haricots verts",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?auto=format&fit=crop&w=900&q=85",
+        search: "loubia khadra haricot vert لوبيا"
+      },
+
+      {
+        id: "petits-pois",
+        name: "Jelbana",
+        french: "Petits pois",
+        arabic: "جلبانة",
+        category: "Légumes",
+        price: 16,
+        unit: "kg",
+        detail: "Petits pois frais",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?auto=format&fit=crop&w=900&q=85",
+        search: "jelbana petit pois جلبانة"
+      },
+
+      {
+        id: "artichaut",
+        name: "Qennaria",
+        french: "Artichauts",
+        arabic: "قرنون",
+        category: "Légumes",
+        price: 15,
+        unit: "kg",
+        detail: "Artichauts",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1595001371200-01c6b9c6a3c9?auto=format&fit=crop&w=900&q=85",
+        search: "qennaria artichaut قرنون"
+      },
+
+
+      /* =========================
+         FRUITS
+      ========================== */
+
+      {
+        id: "orange",
+        name: "Limoun",
+        french: "Oranges à jus",
+        arabic: "برتقال",
+        category: "Fruits",
+        price: 8,
+        unit: "kg",
+        detail: "Oranges à jus",
+        badge: "Populaire",
+        image: "https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&w=900&q=85",
+        search: "limoun orange oranges عصير برتقال"
+      },
+
+      {
+        id: "citron",
+        name: "Hamed",
+        french: "Citrons",
+        arabic: "حامض",
+        category: "Fruits",
+        price: 10,
+        unit: "kg",
+        detail: "Citrons frais",
+        image: "https://images.unsplash.com/photo-1590502593747-42a996133562?auto=format&fit=crop&w=900&q=85",
+        search: "hamed citron حامض"
+      },
+
+      {
+        id: "banane",
+        name: "Banane Local",
+        french: "Bananes locales",
+        arabic: "موز بلدي",
+        category: "Fruits",
+        price: 12,
+        unit: "kg",
+        detail: "Bananes locales",
+        badge: "Populaire",
+        image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=900&q=85",
+        search: "banane local موز بلدي"
+      },
+
+      {
+        id: "banane-import",
+        name: "Banane",
+        french: "Bananes",
+        arabic: "موز",
+        category: "Fruits",
+        price: 14,
+        unit: "kg",
+        detail: "Bananes",
+        image: "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=900&q=85",
+        search: "banane موز"
+      },
+
+      {
+        id: "pomme-gala",
+        name: "Tfah Gala",
+        french: "Pommes Gala",
+        arabic: "تفاح غالا",
+        category: "Fruits",
+        price: 16,
+        unit: "kg",
+        detail: "Pommes Gala",
+        badge: "Populaire",
+        image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=900&q=85",
+        search: "tfah gala pomme gala تفاح"
+      },
+
+      {
+        id: "pomme-golden",
+        name: "Tfah Golden",
+        french: "Pommes Golden",
+        arabic: "تفاح غولدن",
+        category: "Fruits",
+        price: 17,
+        unit: "kg",
+        detail: "Pommes Golden",
+        image: "https://images.unsplash.com/photo-1569870499705-504209102861?auto=format&fit=crop&w=900&q=85",
+        search: "tfah golden pomme golden"
+      },
+
+      {
+        id: "pomme-granny",
+        name: "Tfah Granny",
+        french: "Pommes Granny Smith",
+        arabic: "تفاح أخضر",
+        category: "Fruits",
+        price: 18,
+        unit: "kg",
+        detail: "Pommes vertes",
+        image: "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?auto=format&fit=crop&w=900&q=85",
+        search: "tfah granny pomme verte تفاح اخضر"
+      },
+
+      {
+        id: "avocat",
+        name: "Avocat Hass",
+        french: "Avocat Hass",
+        arabic: "أفوكا",
+        category: "Fruits",
+        price: 35,
+        unit: "kg",
+        detail: "Avocat Hass",
+        badge: "Premium",
+        image: "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&fit=crop&w=900&q=85",
+        search: "avocat hass أفوكا"
+      },
+
+      {
+        id: "fraise",
+        name: "Fraise",
+        french: "Fraises",
+        arabic: "فريز",
+        category: "Fruits",
+        price: 28,
+        unit: "kg",
+        detail: "Fraises fraîches",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=900&q=85",
+        search: "fraise fraises فريز"
+      },
+
+      {
+        id: "raisin",
+        name: "Raisin",
+        french: "Raisin",
+        arabic: "عنب",
+        category: "Fruits",
+        price: 20,
+        unit: "kg",
+        detail: "Raisin frais",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=900&q=85",
+        search: "raisin عنب"
+      },
+
+      {
+        id: "clementine",
+        name: "Clémentine",
+        french: "Clémentines",
+        arabic: "كليمانتين",
+        category: "Fruits",
+        price: 13,
+        unit: "kg",
+        detail: "Clémentines",
+        image: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?auto=format&fit=crop&w=900&q=85",
+        search: "clementine كليمانتين"
+      },
+
+      {
+        id: "mandarine",
+        name: "Mandarine",
+        french: "Mandarines",
+        arabic: "مندرين",
+        category: "Fruits",
+        price: 12,
+        unit: "kg",
+        detail: "Mandarines",
+        image: "https://images.unsplash.com/photo-1604947259927-0f9d0f3f8f4f?auto=format&fit=crop&w=900&q=85",
+        search: "mandarine mandarin ماندارين"
+      },
+
+      {
+        id: "peche",
+        name: "Pêche",
+        french: "Pêches",
+        arabic: "خوخ",
+        category: "Fruits",
+        price: 22,
+        unit: "kg",
+        detail: "Pêches fraîches",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1629828874514-2a7f0c7b1c43?auto=format&fit=crop&w=900&q=85",
+        search: "peche pêche خوخ"
+      },
+
+      {
+        id: "nectarine",
+        name: "Nectarine",
+        french: "Nectarines",
+        arabic: "نيكتارين",
+        category: "Fruits",
+        price: 22,
+        unit: "kg",
+        detail: "Nectarines",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1603117712422-8b9b6b8a5f14?auto=format&fit=crop&w=900&q=85",
+        search: "nectarine"
+      },
+
+      {
+        id: "abricot",
+        name: "Mechmach",
+        french: "Abricots",
+        arabic: "مشمش",
+        category: "Fruits",
+        price: 24,
+        unit: "kg",
+        detail: "Abricots frais",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&w=900&q=85",
+        search: "mechmach abricot مشمش"
+      },
+
+      {
+        id: "prune",
+        name: "Prune",
+        french: "Prunes",
+        arabic: "برقوق",
+        category: "Fruits",
+        price: 20,
+        unit: "kg",
+        detail: "Prunes fraîches",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1528821128474-27f963b062bf?auto=format&fit=crop&w=900&q=85",
+        search: "prune برقوق"
+      },
+
+      {
+        id: "poire",
+        name: "Poire",
+        french: "Poires",
+        arabic: "إجاص",
+        category: "Fruits",
+        price: 18,
+        unit: "kg",
+        detail: "Poires fraîches",
+        image: "https://images.unsplash.com/photo-1514756331096-242fdeb70d4a?auto=format&fit=crop&w=900&q=85",
+        search: "poire إجاص"
+      },
+
+      {
+        id: "kiwi",
+        name: "Kiwi",
+        french: "Kiwis",
+        arabic: "كيوي",
+        category: "Fruits",
+        price: 28,
+        unit: "kg",
+        detail: "Kiwis frais",
+        image: "https://images.unsplash.com/photo-1585059895524-72359e06133a?auto=format&fit=crop&w=900&q=85",
+        search: "kiwi كيوي"
+      },
+
+      {
+        id: "ananas",
+        name: "Ananas",
+        french: "Ananas",
+        arabic: "أناناس",
+        category: "Fruits",
+        price: 22,
+        unit: "pièce",
+        detail: "Ananas entier",
+        image: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=900&q=85",
+        search: "ananas أناناس"
+      },
+
+      {
+        id: "mangue",
+        name: "Mangue",
+        french: "Mangues",
+        arabic: "مانغا",
+        category: "Fruits",
+        price: 30,
+        unit: "kg",
+        detail: "Mangues fraîches",
+        badge: "Premium",
+        image: "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=900&q=85",
+        search: "mangue مانغا"
+      },
+
+      {
+        id: "pasteque",
+        name: "Della7",
+        french: "Pastèque",
+        arabic: "دلاح",
+        category: "Fruits",
+        price: 6,
+        unit: "kg",
+        detail: "Pastèque fraîche",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1563114773-84221bd62daa?auto=format&fit=crop&w=900&q=85",
+        search: "dellah pasteque دلاح"
+      },
+
+      {
+        id: "melon",
+        name: "Melon",
+        french: "Melons",
+        arabic: "شمام",
+        category: "Fruits",
+        price: 12,
+        unit: "kg",
+        detail: "Melon frais",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1578849278619-7d7e68c4c4b6?auto=format&fit=crop&w=900&q=85",
+        search: "melon شمام"
+      },
+
+      {
+        id: "grenade",
+        name: "Rman",
+        french: "Grenades",
+        arabic: "رمان",
+        category: "Fruits",
+        price: 20,
+        unit: "kg",
+        detail: "Grenades fraîches",
+        badge: "Saison",
+        image: "https://images.unsplash.com/photo-1541344999736-83eca272f6fc?auto=format&fit=crop&w=900&q=85",
+        search: "rman grenade رمان"
+      },
+
+
+      /* =========================
+         HERBES
+      ========================== */
+
+      {
+        id: "qosbor-ma3dnous",
+        name: "Qosbor w Ma3dnous",
+        french: "Coriandre & Persil",
+        arabic: "قزبر ومعدنوس",
+        category: "Herbes",
+        price: 2,
+        unit: "botte",
+        detail: "Botte fraîche",
+        badge: "Essentiel",
+        image: "https://images.unsplash.com/photo-1618375569909-3c8616cf7733?auto=format&fit=crop&w=900&q=85",
+        search: "qosbor ma3dnous coriandre persil قزبر معدنوس"
+      },
+
+      {
+        id: "qosbor",
+        name: "Qosbor",
+        french: "Coriandre",
+        arabic: "قزبر",
+        category: "Herbes",
+        price: 2,
+        unit: "botte",
+        detail: "Botte fraîche",
+        image: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=900&q=85",
+        search: "qosbor coriandre قزبر"
+      },
+
+      {
+        id: "ma3dnous",
+        name: "Ma3dnous",
+        french: "Persil",
+        arabic: "معدنوس",
+        category: "Herbes",
+        price: 2,
+        unit: "botte",
+        detail: "Botte fraîche",
+        image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=900&q=85",
+        search: "ma3dnous persil معدنوس"
+      },
+
+      {
+        id: "na3na3",
+        name: "Na3na3",
+        french: "Menthe",
+        arabic: "نعناع",
+        category: "Herbes",
+        price: 2,
+        unit: "botte",
+        detail: "Menthe fraîche",
+        badge: "Essentiel",
+        image: "https://images.unsplash.com/photo-1628557044797-f21a177c37ec?auto=format&fit=crop&w=900&q=85",
+        search: "na3na3 menthe نعناع"
+      },
+
+      {
+        id: "basilic",
+        name: "Basilic",
+        french: "Basilic frais",
+        arabic: "حبق",
+        category: "Herbes",
+        price: 3,
+        unit: "botte",
+        detail: "Basilic frais",
+        image: "https://images.unsplash.com/photo-1618375569909-3c8616cf7733?auto=format&fit=crop&w=900&q=85",
+        search: "basilic حبق"
+      },
+
+      {
+        id: "romarin",
+        name: "Azir",
+        french: "Romarin",
+        arabic: "أزير",
+        category: "Herbes",
+        price: 3,
+        unit: "botte",
+        detail: "Romarin frais",
+        image: "https://images.unsplash.com/photo-1515586000433-45406d8e6662?auto=format&fit=crop&w=900&q=85",
+        search: "azir romarin أزير"
+      },
+
+      {
+        id: "thym",
+        name: "Za3tar",
+        french: "Thym",
+        arabic: "زعتر",
+        category: "Herbes",
+        price: 3,
+        unit: "botte",
+        detail: "Thym frais",
+        image: "https://images.unsplash.com/photo-1515586000433-45406d8e6662?auto=format&fit=crop&w=900&q=85",
+        search: "za3tar thym زعتر"
+      },
+
+      {
+        id: "celeri",
+        name: "Krafes",
+        french: "Céleri",
+        arabic: "كرفس",
+        category: "Herbes",
+        price: 4,
+        unit: "botte",
+        detail: "Céleri frais",
+        image: "https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=900&q=85",
+        search: "krafes celeri céleri كرفس"
+      },
+
+      {
+        id: "laurier",
+        name: "Wra9 Sidna Moussa",
+        french: "Laurier",
+        arabic: "ورق سيدنا موسى",
+        category: "Herbes",
+        price: 3,
+        unit: "botte",
+        detail: "Feuilles de laurier",
+        image: "https://images.unsplash.com/photo-1515586000433-45406d8e6662?auto=format&fit=crop&w=900&q=85",
+        search: "laurier ورق سيدنا موسى"
+      }
+
+    ];
+
+
+    /* =====================================
+       STATE
+    ====================================== */
+
+    let cart = JSON.parse(
+      localStorage.getItem("freshsouk-cart") || "[]"
+    );
+
+    let activeCategory = "Tous";
+    let searchTerm = "";
+
+
+    /* =====================================
+       HELPERS
+    ====================================== */
+
+    function money(value) {
+      return `${Number(value).toFixed(0)} DH`;
+    }
+
+    function normalizeText(value) {
+      return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function getProduct(id) {
+      return PRODUCTS.find(product => product.id === id);
+    }
+
+    function saveCart() {
+      localStorage.setItem(
+        "freshsouk-cart",
+        JSON.stringify(cart)
+      );
+    }
+
+    function getCartQuantity() {
+      return cart.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+    }
+
+    function getSubtotal() {
+      return cart.reduce((total, item) => {
+        const product = getProduct(item.id);
+        return total + (product ? product.price * item.quantity : 0);
+      }, 0);
+    }
+
+    function getShipping(city = "Casablanca") {
+      const subtotal = getSubtotal();
+
+      if (subtotal === 0) {
+        return 0;
+      }
+
+      if (
+        FREE_DELIVERY_CITIES.includes(city) &&
+        subtotal >= FREE_DELIVERY_THRESHOLD
+      ) {
+        return 0;
+      }
+
+      return STANDARD_DELIVERY;
+    }
+
+
+    /* =====================================
+       RENDER PRODUCTS
+    ====================================== */
+
+    function renderProducts() {
+
+      const grid = document.getElementById("productsGrid");
+      const emptyState = document.getElementById("emptyState");
+      const resultCount = document.getElementById("resultCount");
+
+      const filtered = PRODUCTS.filter(product => {
+
+        const categoryMatch =
+          activeCategory === "Tous" ||
+          product.category === activeCategory;
+
+        const haystack = normalizeText(
+          [
+            product.name,
+            product.french,
+            product.arabic,
+            product.category,
+            product.detail,
+            product.search
+          ].join(" ")
+        );
+
+        const searchMatch =
+          !searchTerm ||
+          haystack.includes(normalizeText(searchTerm));
+
+        return categoryMatch && searchMatch;
+      });
+
+      resultCount.textContent =
+        `${filtered.length} produit${filtered.length > 1 ? "s" : ""}`;
+
+      if (!filtered.length) {
+        grid.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        return;
+      }
+
+      emptyState.classList.add("hidden");
+
+      grid.innerHTML = filtered.map(product => {
+
+        const cartItem = cart.find(
+          item => item.id === product.id
+        );
+
+        const quantity = cartItem
+          ? cartItem.quantity
+          : 0;
+
+        return `
+          <article class="product-card bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-card">
+
+            <div class="relative overflow-hidden">
+
+              ${product.badge ? `
+                <span class="badge bg-souk-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">
+                  ${product.badge}
+                </span>
+              ` : ""}
+
+              <img
+                src="${product.image}"
+                alt="${product.french}"
+                loading="lazy"
+                onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'"
+                class="product-image w-full h-40 sm:h-48 object-cover"
+              />
+
+            </div>
+
+            <div class="p-4">
+
+              <div class="text-[11px] font-bold uppercase tracking-wider text-fresh-700">
+                ${product.category}
+              </div>
+
+              <h3 class="font-black mt-1 text-sm sm:text-base line-clamp-2">
+                ${product.name}
+              </h3>
+
+              <p class="text-xs text-slate-500 mt-1">
+                ${product.french}
+              </p>
+
+              <p class="text-xs text-green-700 mt-2 font-semibold">
+                ${product.detail}
+              </p>
+
+              ${product.label ? `
+                <p class="text-[11px] text-orange-600 mt-2 line-clamp-2">
+                  ${product.label}
+                </p>
+              ` : ""}
+
+              <div class="flex items-end justify-between gap-2 mt-4">
+
+                <div>
+                  <div class="text-lg font-black text-fresh-800">
+                    ${money(product.price)}
+                  </div>
+
+                  <div class="text-[10px] text-slate-400">
+                    / ${product.unit}
+                  </div>
+                </div>
+
+                <button
+                  onclick="addToCart('${product.id}')"
+                  class="w-10 h-10 rounded-xl bg-fresh-800 text-white flex items-center justify-center hover:bg-fresh-700 transition"
+                  aria-label="Ajouter ${product.french}"
+                >
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+
+              </div>
+
+              ${quantity > 0 ? `
+                <div class="mt-3 flex items-center justify-between bg-green-50 rounded-xl px-3 py-2">
+                  <span class="text-xs font-bold text-green-800">
+                    ${quantity} dans le panier
+                  </span>
+
+                  <button
+                    onclick="openCart()"
+                    class="text-xs font-black text-green-700 underline"
+                  >
+                    Voir
+                  </button>
+                </div>
+              ` : ""}
+
+            </div>
+
+          </article>
+        `;
+      }).join("");
+    }
+
+
+    /* =====================================
+       CART
+    ====================================== */
+
+    function addToCart(id) {
+
+      const existing = cart.find(
+        item => item.id === id
+      );
+
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          id,
+          quantity: 1
+        });
+      }
+
+      saveCart();
+      updateCart();
+      renderProducts();
+
+      const product = getProduct(id);
+
+      showToast(
+        `${product.name} ajouté au panier`
+      );
+    }
+
+
+    function increaseQuantity(id) {
+
+      const item = cart.find(
+        item => item.id === id
+      );
+
+      if (item) {
+        item.quantity += 1;
+      }
+
+      saveCart();
+      updateCart();
+      renderProducts();
+    }
+
+
+    function decreaseQuantity(id) {
+
+      const item = cart.find(
+        item => item.id === id
+      );
+
+      if (!item) return;
+
+      item.quantity -= 1;
+
+      if (item.quantity <= 0) {
+        cart = cart.filter(
+          cartItem => cartItem.id !== id
+        );
+      }
+
+      saveCart();
+      updateCart();
+      renderProducts();
+    }
+
+
+    function removeFromCart(id) {
+
+      cart = cart.filter(
+        item => item.id !== id
+      );
+
+      saveCart();
+      updateCart();
+      renderProducts();
+    }
+
+
+    function updateCart() {
+
+      const cartItems = document.getElementById("cartItems");
+      const cartCount = document.getElementById("cartCount");
+      const cartSubtitle = document.getElementById("cartSubtitle");
+
+      const subtotal = getSubtotal();
+      const shipping = getShipping("Casablanca");
+      const total = subtotal + shipping;
+
+      const quantity = getCartQuantity();
+
+      cartCount.textContent = quantity;
+
+      cartSubtitle.textContent =
+        `${quantity} article${quantity > 1 ? "s" : ""}`;
+
+      document.getElementById("cartSubtotal").textContent =
+        money(subtotal);
+
+      document.getElementById("cartShipping").textContent =
+        shipping === 0 && subtotal > 0
+          ? "GRATUITE"
+          : money(shipping);
+
+      document.getElementById("cartTotal").textContent =
+        money(total);
+
+
+      /* Progress */
+      const progress =
+        Math.min(
+          (subtotal / FREE_DELIVERY_THRESHOLD) * 100,
+          100
+        );
+
+      document.getElementById("deliveryProgress").style.width =
+        `${progress}%`;
+
+      const hint =
+        document.getElementById("deliveryProgressHint");
+
+      if (subtotal >= FREE_DELIVERY_THRESHOLD) {
+        hint.textContent =
+          "🎉 Livraison gratuite à Casablanca, Bouskoura & Mohammedia.";
+      } else {
+        const remaining =
+          FREE_DELIVERY_THRESHOLD - subtotal;
+
+        hint.textContent =
+          `Encore ${money(remaining)} pour atteindre la livraison gratuite.`;
+      }
+
+
+      /* Items */
+      if (!cart.length) {
+
+        cartItems.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center py-20">
+            <div class="w-20 h-20 rounded-full bg-green-100 text-fresh-800 flex items-center justify-center text-3xl">
+              <i class="fa-solid fa-basket-shopping"></i>
+            </div>
+
+            <h3 class="font-black text-lg mt-5">
+              Ton panier est vide
+            </h3>
+
+            <p class="text-sm text-slate-500 mt-2 max-w-xs">
+              Ajoute des produits frais pour commencer ta commande.
+            </p>
+
+            <button
+              onclick="closeCart(); document.getElementById('catalogue').scrollIntoView();"
+              class="mt-5 bg-fresh-800 text-white px-5 py-3 rounded-xl font-bold"
+            >
+              Voir les produits
+            </button>
+          </div>
+        `;
+
+        document.getElementById("checkoutBtn").disabled = true;
+        return;
+      }
+
+
+      document.getElementById("checkoutBtn").disabled = false;
+
+      cartItems.innerHTML = cart.map(item => {
+
+        const product = getProduct(item.id);
+
+        if (!product) return "";
+
+        const lineTotal =
+          product.price * item.quantity;
+
+        return `
+          <div class="flex gap-3 py-4 border-b last:border-b-0">
+
+            <img
+              src="${product.image}"
+              alt="${product.french}"
+              onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'"
+              class="w-20 h-20 rounded-xl object-cover flex-shrink-0"
+            />
+
+            <div class="flex-1 min-w-0">
+
+              <div class="flex justify-between gap-2">
+                <div>
+                  <h4 class="font-black text-sm">
+                    ${product.name}
+                  </h4>
+
+                  <p class="text-xs text-slate-500">
+                    ${money(product.price)} / ${product.unit}
+                  </p>
+                </div>
+
+                <button
+                  onclick="removeFromCart('${product.id}')"
+                  class="text-slate-400 hover:text-red-500"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+
+              <div class="flex items-center justify-between mt-3">
+
+                <div class="flex items-center gap-2">
+                  <button
+                    onclick="decreaseQuantity('${product.id}')"
+                    class="quantity-btn"
+                  >
+                    <i class="fa-solid fa-minus text-xs"></i>
+                  </button>
+
+                  <span class="w-7 text-center font-black">
+                    ${item.quantity}
+                  </span>
+
+                  <button
+                    onclick="increaseQuantity('${product.id}')"
+                    class="quantity-btn"
+                  >
+                    <i class="fa-solid fa-plus text-xs"></i>
+                  </button>
+                </div>
+
+                <strong class="text-fresh-800">
+                  ${money(lineTotal)}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+        `;
+      }).join("");
+    }
+
+
+    /* =====================================
+       CART OPEN/CLOSE
+    ====================================== */
+
+    function openCart() {
+
+      updateCart();
+
+      document
+        .getElementById("cartDrawer")
+        .classList.remove("closed");
+
+      document
+        .getElementById("cartOverlay")
+        .classList.remove("hidden-overlay");
+
+      document.body.style.overflow = "hidden";
+    }
+
+
+    function closeCart() {
+
+      document
+        .getElementById("cartDrawer")
+        .classList.add("closed");
+
+      document
+        .getElementById("cartOverlay")
+        .classList.add("hidden-overlay");
+
+      document.body.style.overflow = "";
+    }
+
+
+    /* =====================================
+       CHECKOUT
+    ====================================== */
+
+    function openCheckout() {
+
+      if (!cart.length) {
+        showToast("Ton panier est vide");
+        return;
+      }
+
+      updateCheckoutSummary();
+
+      document
+        .getElementById("checkoutOverlay")
+        .classList.remove("hidden");
+
+      setTimeout(() => {
+        document
+          .getElementById("checkoutModal")
+          .classList.remove("hidden-modal");
+      }, 10);
+
+      document.body.style.overflow = "hidden";
+    }
+
+
+    function closeCheckout() {
+
+      document
+        .getElementById("checkoutModal")
+        .classList.add("hidden-modal");
+
+      setTimeout(() => {
+
+        document
+          .getElementById("checkoutOverlay")
+          .classList.add("hidden");
+
+      }, 150);
+
+      document.body.style.overflow = "";
+    }
+
+
+    function updateCheckoutSummary() {
+
+      const city =
+        document.getElementById("citySelect").value;
+
+      const subtotal = getSubtotal();
+      const shipping = getShipping(city);
+      const total = subtotal + shipping;
+
+      const itemsContainer =
+        document.getElementById("checkoutItems");
+
+      itemsContainer.innerHTML = cart.map(item => {
+
+        const product = getProduct(item.id);
+
+        if (!product) return "";
+
+        return `
+          <div class="flex justify-between gap-3 text-sm">
+            <span>
+              ${product.name}
+              <strong class="text-slate-500">
+                × ${item.quantity}
+              </strong>
+            </span>
+
+            <strong>
+              ${money(product.price * item.quantity)}
+            </strong>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("checkoutSubtotal").textContent =
+        money(subtotal);
+
+      document.getElementById("checkoutShipping").textContent =
+        shipping === 0 && subtotal > 0
+          ? "GRATUITE"
+          : money(shipping);
+
+      document.getElementById("checkoutTotal").textContent =
+        money(total);
+
+      const note =
+        document.getElementById("cityDeliveryNote");
+
+      if (FREE_DELIVERY_CITIES.includes(city)) {
+
+        if (subtotal >= FREE_DELIVERY_THRESHOLD) {
+          note.textContent =
+            "🎉 Livraison gratuite pour cette ville.";
+        } else {
+          note.textContent =
+            `Livraison gratuite dès ${FREE_DELIVERY_THRESHOLD} DH.`;
+        }
+
+      } else {
+
+        note.textContent =
+          "Livraison standard : 20 DH pour cette ville.";
+      }
+    }
+
+
+    /* =====================================
+       WHATSAPP ORDER
+    ====================================== */
+
+    function submitOrder(event) {
+
+      event.preventDefault();
+
+      if (!cart.length) {
+        showToast("Ton panier est vide");
+        return;
+      }
+
+      const form =
+        document.getElementById("checkoutForm");
+
+      const formData =
+        new FormData(form);
+
+      const name =
+        formData.get("name");
+
+      const phone =
+        formData.get("phone");
+
+      const city =
+        formData.get("city");
+
+      const address =
+        formData.get("address");
+
+      const time =
+        formData.get("time");
+
+      const note =
+        formData.get("note") || "Aucune";
+
+      const subtotal =
+        getSubtotal();
+
+      const shipping =
+        getShipping(city);
+
+      const total =
+        subtotal + shipping;
+
+
+      let message =
+`🛒 *NOUVELLE COMMANDE — FreshSOUK*
+
+👤 *Client :* ${name}
+📞 *Téléphone :* ${phone}
+📍 *Ville :* ${city}
+🏠 *Adresse :* ${address}
+🕐 *Créneau :* ${time}
+
+━━━━━━━━━━━━━━━━━━
+
+🧺 *PRODUITS :*
+`;
+
+      cart.forEach(item => {
+
+        const product =
+          getProduct(item.id);
+
+        if (!product) return;
+
+        const lineTotal =
+          product.price * item.quantity;
+
+        message +=
+`\n• ${product.name} × ${item.quantity} = ${money(lineTotal)}`;
+      });
+
+
+      message +=
+`
+
+━━━━━━━━━━━━━━━━━━
+
+💰 *Sous-total :* ${money(subtotal)}
+🚚 *Livraison :* ${
+  shipping === 0
+    ? "GRATUITE"
+    : money(shipping)
+}
+💵 *TOTAL :* ${money(total)}
+
+💳 *Paiement :* À LA LIVRAISON
+
+📝 *Note :* ${note}
+
+✅ Le client souhaite vérifier la marchandise avant paiement.
+
+Merci FreshSOUK 🌱`;
+
+
+      const whatsappURL =
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+
+      window.open(
+        whatsappURL,
+        "_blank",
+        "noopener,noreferrer"
+      );
+
+
+      /*
+        On garde le panier quelques instants.
+        L'utilisateur peut le vider après confirmation.
+      */
+
+      showToast(
+        "Commande préparée pour WhatsApp"
+      );
+    }
+
+
+    /* =====================================
+       TOAST
+    ====================================== */
+
+    let toastTimer;
+
+    function showToast(message) {
+
+      const toast =
+        document.getElementById("toast");
+
+      document.getElementById("toastText").textContent =
+        message;
+
+      toast.classList.remove("hidden");
+      toast.classList.add("toast");
+
+      clearTimeout(toastTimer);
+
+      toastTimer = setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 2500);
+    }
+
+
+    /* =====================================
+       EVENTS
+    ====================================== */
+
+    document
+      .getElementById("openCartBtn")
+      .addEventListener("click", openCart);
+
+    document
+      .getElementById("closeCartBtn")
+      .addEventListener("click", closeCart);
+
+    document
+      .getElementById("cartOverlay")
+      .addEventListener("click", closeCart);
+
+    document
+      .getElementById("checkoutBtn")
+      .addEventListener("click", () => {
+
+        closeCart();
+
+        setTimeout(() => {
+          openCheckout();
+        }, 250);
+
+      });
+
+    document
+      .getElementById("closeCheckoutBtn")
+      .addEventListener("click", closeCheckout);
+
+    document
+      .getElementById("checkoutOverlay")
+      .addEventListener("click", event => {
+
+        if (
+          event.target.id === "checkoutOverlay"
+        ) {
+          closeCheckout();
+        }
+
+      });
+
+    document
+      .getElementById("checkoutForm")
+      .addEventListener("submit", submitOrder);
+
+    document
+      .getElementById("citySelect")
+      .addEventListener("change", updateCheckoutSummary);
+
+
+    /* SEARCH */
+
+    document
+      .getElementById("searchInput")
+      .addEventListener("input", event => {
+
+        searchTerm =
+          event.target.value.trim();
+
+        renderProducts();
+      });
+
+
+    /* CATEGORY FILTER */
+
+    document
+      .querySelectorAll(".category-btn")
+      .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+          activeCategory =
+            button.dataset.category;
+
+          document
+            .querySelectorAll(".category-btn")
+            .forEach(btn => {
+              btn.classList.remove("active");
+            });
+
+          button.classList.add("active");
+
+          renderProducts();
+
+          document
+            .getElementById("catalogue")
+            .scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+        });
+
+      });
+
+
+    /* ESCAPE */
+
+    document.addEventListener("keydown", event => {
+
+      if (event.key === "Escape") {
+        closeCart();
+        closeCheckout();
+      }
+
+    });
+
+
+    /* YEAR */
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+
+    /* =====================================
+       INIT
+    ====================================== */
+
+    renderProducts();
+    updateCart();
+
+  </script>
+
+</body>
+</html>
